@@ -1,0 +1,11 @@
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.AssemblyInfoInputs.cache
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.AssemblyInfo.cs
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\bin\Debug\net5.0\Shared.Common.deps.json
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\bin\Debug\net5.0\Shared.Common.dll
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\bin\Debug\net5.0\ref\Shared.Common.dll
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\bin\Debug\net5.0\Shared.Common.pdb
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.dll
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\ref\Shared.Common.dll
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.pdb
