@@ -5,11 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\" />
+    <ProjectReference Include="..\Shared.Common\Shared.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared.Common\Shared.Common.csproj" />
+    <Folder Include="Repositories\CarInformationRepository\DTO\" />
+    <Folder Include="Repositories\UserRepository\DTO\" />
   </ItemGroup>
 
 </Project>

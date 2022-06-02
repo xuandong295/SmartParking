@@ -9,3 +9,4 @@ C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\bin\Debug\net5.0\
 C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.dll
 C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\ref\Shared.Common.dll
 C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.pdb
+C:\Users\Admin\Desktop\FinalProject\SmartParking\Shared.Common\obj\Debug\net5.0\Shared.Common.csproj.AssemblyReference.cache

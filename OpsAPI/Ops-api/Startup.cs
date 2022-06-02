@@ -15,6 +15,8 @@ using Nest;
 using Shared.Model.Config;
 using Shared.Model.Entities.EF;
 using Shared.Model.Persistence;
+using Shared.Model.Repositories.BaseRepository;
+using Shared.Model.Repositories.CarInformationRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +59,7 @@ namespace OpsAPI
             {
                 return new PersistenceFactory(elasticSearchConfiguration, LoggerFactory);
             });
+            services.AddTransient<ICarRepository, CarRepository>();
             //services.AddTransient<IPersistenceFactory, PersistenceFactory>();
             //services.AddTransient<IElasticSearchClient, ElasticSearchClient>();
         }

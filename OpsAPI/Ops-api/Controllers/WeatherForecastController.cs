@@ -6,12 +6,15 @@ using Nest;
 using Newtonsoft.Json;
 using Shared.Model.Config;
 using Shared.Model.Entities.EF;
+using Shared.Model.Entities.ElasticSearchModel;
 using Shared.Model.Entities.Model;
 using Shared.Model.Persistence;
+using Shared.Model.Repositories.CarInformationRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Shared.Model.ConstantHelper.ConstantHelper;
 
 namespace OpsAPI.Controllers
 {
@@ -21,30 +24,24 @@ namespace OpsAPI.Controllers
     {
         public readonly DataContext _context;
         private IPersistenceFactory PersistenceFactory;
-        public WeatherForecastController(DataContext context, IPersistenceFactory persistenceFactory)
+        private ICarRepository CarRepository { get; set; }
+        public WeatherForecastController(DataContext context, IPersistenceFactory persistenceFactory, ICarRepository carRepository)
         {
             _context = context;
             PersistenceFactory = persistenceFactory;
+            CarRepository = carRepository;
         }
 
         [HttpGet]
-        public async Task<string> GetClasses()
+        public async Task<IActionResult> GetClasses()
         {
-            GetResult<Class> result = new();
-            try
+            var result = await CarRepository.GetCarInformation("224f0f67-946e-4916-b5d6-8c502740546e", 123);
+            return Ok(new InternalAPIResponseCode
             {
-                List<Class> classes = new();
-                classes = await _context.Class.ToListAsync();
-                result.Config(1, classes, "Getted Successfully");
-                string convert = JsonConvert.SerializeObject(result);
-                return convert;
-            }
-            catch (Exception ex)
-            {
-                result.Config(0, null, ex.Message);
-                string convert = JsonConvert.SerializeObject(result);
-                return convert;
-            }
+                Code = APICodeResponse.SUCCESSED_CODE,
+                Message = MessageAPIResponse.OK,
+                Data = result
+            });
         }
 
         [HttpPost]
@@ -52,8 +49,16 @@ namespace OpsAPI.Controllers
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
-                elasticSearchClient.CreateIndex("1238");
+
+                //elasticSearchClient.CreateIndex("1238");
+                elasticSearchClient.CreateIndexAutoMapping<Car>("Index");
             }
+        }
+        [HttpPost]
+        [Route("information")]
+        public async Task CreateCarInformationIn(Car car)
+        {
+            await CarRepository.InputCarIndex(car);
         }
     }
 }
