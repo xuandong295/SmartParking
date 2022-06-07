@@ -17,6 +17,7 @@ using Shared.Model.Entities.EF;
 using Shared.Model.Persistence;
 using Shared.Model.Repositories.BaseRepository;
 using Shared.Model.Repositories.CarInformationRepository;
+using Shared.Model.Repositories.UserRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,7 @@ namespace OpsAPI
                 return new PersistenceFactory(elasticSearchConfiguration, LoggerFactory);
             });
             services.AddTransient<ICarRepository, CarRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             //services.AddTransient<IPersistenceFactory, PersistenceFactory>();
             //services.AddTransient<IElasticSearchClient, ElasticSearchClient>();
         }

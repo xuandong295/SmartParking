@@ -68,6 +68,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
                                       )
                         )
                     );
+               
                 var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync(dateTime.ToString(), q, "1m", 5000);
                 foreach (var hit in resourceResponseHits)
                 {
