@@ -41,47 +41,47 @@ namespace Shared.Model.Repositories.UserRepository
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
-                var cars = new List<User>();
-                // get list resources
-                QueryContainerDescriptor<object> query = new QueryContainerDescriptor<object>();
-                //Đoạn này phải check state = 1 nữa
-                query.Bool(b => b.
-                           Filter(mu => mu
-                                   .Term(t => t
-                                      .Field("licensePlateNumber.keyword")
-                                      .Value(licensePlate)
-                                      )
-                        )
-                    );
-                var aggs = new AggregationContainerDescriptor<object>();
-                aggs.Terms("getTimeIn", t => t.Field("timeIn")
-                        .Order(o => o.KeyDescending())
-                        .Size(1))
-                    .Terms("getBalance", t => t.Field("timeIn")
-                    .Order(o => o.KeyDescending())
-                        .Size(1));// only get latest time)
-                var aggResponse = await elasticSearchClient.CustomizeAggregationAsync("1122", query, aggs, 0);
-                if (aggResponse != null)
-                {
-                    var termTimeIn = aggResponse.Aggregations.Terms("getCarIn").Buckets;
-                    foreach (var item in termTimeIn)
-                    {
-                        var timeIn = item.Key;
-                        // string to long
-                    }
-                    var termBalance = aggResponse.Aggregations.Terms("getBalance").Buckets;
-                    foreach (var item in termBalance)
-                    {
-                        var balanceIn = item.Key;
-                    }
-                }
-                var cars1 = new List<Car>();
+                //var cars = new List<User>();
+                //// get list resources
+                //QueryContainerDescriptor<object> query = new QueryContainerDescriptor<object>();
+                ////Đoạn này phải check state = 1 nữa
+                //query.Bool(b => b.
+                //           Filter(mu => mu
+                //                   .Term(t => t
+                //                      .Field("licensePlateNumber.keyword")
+                //                      .Value(licensePlate)
+                //                      )
+                //        )
+                //    );
+                //var aggs = new AggregationContainerDescriptor<object>();
+                //aggs.Terms("getTimeIn", t => t.Field("timeIn")
+                //        .Order(o => o.KeyDescending())
+                //        .Size(1))
+                //    .Terms("getBalance", t => t.Field("timeIn")
+                //    .Order(o => o.KeyDescending())
+                //        .Size(1));// only get latest time)
+                //var aggResponse = await elasticSearchClient.CustomizeAggregationAsync("1122", query, aggs, 0);
+                //if (aggResponse != null)
+                //{
+                //    var termTimeIn = aggResponse.Aggregations.Terms("getTimeIn").Buckets;
+                //    foreach (var item in termTimeIn)
+                //    {
+                //        var timeIn = item.Key;
+                //        // string to long
+                //    }
+                //    var termBalance = aggResponse.Aggregations.Terms("getBalance").Buckets;
+                //    foreach (var item in termBalance)
+                //    {
+                //        var balanceIn = item.Key;
+                //    }
+                //}
+                var cars = new List<Car>();
                 // get list resources
                 QueryContainerDescriptor<object> q = new QueryContainerDescriptor<object>();
                 q.Bool(b => b.
                            Filter(mu => mu
                                    .Term(t => t
-                                      .Field("carId.keyword")
+                                      .Field("licensePlateNumber.keyword")
                                       .Value(licensePlate)
                                       )
                         )
@@ -92,19 +92,18 @@ namespace Shared.Model.Repositories.UserRepository
                 {
                     var jsonStr = JsonHelper.Serialize(hit.Source);
                     var resource = JsonHelper.Deserialize<Car>(jsonStr);
-                    cars1.Add(resource);
+                    cars.Add(resource);
                 }
-                var max = cars1
-                        .Select(c => c.TimeIn)
-                        .DefaultIfEmpty(0)
-                        .Max();
-                    
+                var currentCarParking = cars.OrderByDescending(o => o.TimeIn).ToList()[0];
+
                 //bên trên có thể get all rồi lọc lại theo trường timeIn?
 
                 // tính tiền
-                DateTime dateTimeNow = DateTime.Now;
+                DateTime timeOut = DateTime.Now;
                 // check thời gian hiện tại trừ đi thời gian gửi
-                UnixTimestamp.UnixTimestampToDateTime(1000);
+                var timeIn = UnixTimestamp.UnixTimestampToDateTime(currentCarParking.TimeIn);
+                var totalTimeInParkingSpace = timeOut - timeIn;
+
                 //Sau đó tính tiền dựa theo thời gian
                 //Tiến hành update dữ liệu
                 //update là xóa ở bảng all, add ở bảng phụ

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8NN2zrFWWucc4XMTJaXjn4sYFqWX4I9uPUTa7O/PI6p0CFawoTa8cWH/gycHVNzFWhtxI0T3FEiou0SFa/wO7w==",
+  "dgSpecHash": "5c976CYSpGzsFDFqCdMtV323KFA/446Gc7OdOVY948oXAAKIqKOt82vvF9UnMLSnhc8D0fdYuQJkO7V3IkwO8A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Desktop\\FinalProject\\SmartParking\\Shared.Model\\Shared.Model.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Desktop\\SmartParking\\Shared.Model\\Shared.Model.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\elasticsearch.net\\7.17.1\\elasticsearch.net.7.17.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.csharp\\4.6.0\\microsoft.csharp.4.6.0.nupkg.sha512",
