@@ -103,11 +103,30 @@ namespace Shared.Model.Repositories.UserRepository
                 // check thời gian hiện tại trừ đi thời gian gửi
                 var timeIn = UnixTimestamp.UnixTimestampToDateTime(currentCarParking.TimeIn);
                 var totalTimeInParkingSpace = timeOut - timeIn;
-
+                long totalMoney = totalTimeInParkingSpace.Days * 50 + totalTimeInParkingSpace.Hours * 20 + totalTimeInParkingSpace.Minutes * 1;
                 //Sau đó tính tiền dựa theo thời gian
+                var user = await DataContext.tblUser.Where(o => o.LisencePlateNumber.Contains(licensePlate)).FirstOrDefaultAsync();
+                user.Balance -= totalMoney;
+                //////// nếu tiền âm trả lại messenge
+                //if (user.Balance < 0) return;
+                DataContext.tblUser.Update(user);
+                await DataContext.SaveChangesAsync();
                 //Tiến hành update dữ liệu
+                //Update tiền vào bảng user ở sql
                 //update là xóa ở bảng all, add ở bảng phụ
-                return 100;
+                QueryContainerDescriptor<object> qu = new QueryContainerDescriptor<object>();
+                qu.Bool(b => b.
+                            Filter(mu => mu
+                                    .Term(t => t
+                                        .Field("licensePlateNumber.keyword")
+                                        .Value(licensePlate)
+                                        )
+                        )
+                    );
+                var deleteDocInSmt = elasticSearchClient.DeleteByQueryAsync("all", qu);
+                currentCarParking.Status = 0;
+                await elasticSearchClient.IndexOneAsync(currentCarParking, timeOut.ToString("d"));
+                return totalMoney;
             }
         }
     }

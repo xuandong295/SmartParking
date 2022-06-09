@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Nest;
 using Newtonsoft.Json.Linq;
 using Shared.Model.Config;
+using Shared.Model.Entities.ElasticSearchModel;
 
 namespace FPT.akaSAFE.Shared.Model.ElasticSearch
 {
@@ -100,6 +101,7 @@ namespace FPT.akaSAFE.Shared.Model.ElasticSearch
             }
             return true;
         }
+
         public bool BulkOne(object obj, string index)
         {
             try
