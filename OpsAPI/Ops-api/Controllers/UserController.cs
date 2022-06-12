@@ -1,12 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Shared.Model.Entities.EF;
+using Shared.Model.Entities.Model;
 using Shared.Model.Persistence;
 using Shared.Model.Repositories.CarInformationRepository;
 using Shared.Model.Repositories.UserRepository;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using static Shared.Model.ConstantHelper.ConstantHelper;
 
@@ -19,13 +26,16 @@ namespace Ops_api.Controllers
         public readonly DataContext _context;
         private IPersistenceFactory PersistenceFactory;
         private IUserRepository UserRepository { get; set; }
-        public UserController(DataContext context, IPersistenceFactory persistenceFactory, IUserRepository userRepository)
+        private IConfiguration _config;
+        public UserController(DataContext context, IPersistenceFactory persistenceFactory, IUserRepository userRepository, IConfiguration config)
         {
             _context = context;
             PersistenceFactory = persistenceFactory;
             UserRepository = userRepository;
+            _config = config;
         }
         [HttpPost]
+        [Route("sign-in")]
         public async Task<IActionResult> SignIn(string userName, string password)
         {
             var currentUser = await UserRepository.LoginAsync(userName, password);
@@ -49,6 +59,7 @@ namespace Ops_api.Controllers
             }
         }
         [HttpGet]
+        [Route("fee")]
         public async Task<IActionResult> PaymentParkingFee(string licensePlate)
         {
             await UserRepository.CaculateParkingFee(licensePlate);
@@ -58,6 +69,65 @@ namespace Ops_api.Controllers
                 Message = MessageAPIResponse.OK,
                 Data = null
             });
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] User login)
+        {
+            IActionResult response = Unauthorized();
+            var user = AuthenticateUser(login);
+
+            if (user != null)
+            {
+                var tokenString = GenerateJSONWebToken(user);
+                response = Ok(new { token = tokenString });
+            }
+
+            return response;
+        }
+
+        private string GenerateJSONWebToken(User userInfo)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var claims = new[] {
+                        new Claim(JwtRegisteredClaimNames.Sub, _config["Jwt:Subject"]),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                        //new Claim("Id", userInfo.Id.ToString()),
+                        new Claim("UserName", userInfo.UserName),
+                        //new Claim("Role", userInfo.Role),
+                        //new Claim("LisencePlateNumber", userInfo.LisencePlateNumber)
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                _config["Jwt:Issuer"],
+                _config["Jwt:Audience"],
+                claims,
+                expires: DateTime.UtcNow.AddMinutes(10),
+                signingCredentials: signIn);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private User AuthenticateUser(User login)
+        {
+            User user = null;
+
+            //Validate the User Credentials    
+            //Demo Purpose, I have Passed HardCoded User Information    
+            if (login.UserName == "admin")
+            {
+                user = new User { UserName = "admin", Password = "admin" };
+            }
+            return user;
+        }
+        [HttpGet]
+        [Authorize]
+        public ActionResult<IEnumerable<string>> Get()
+        {
+            return new string[] { "value1", "value2", "value3", "value4", "value5" };
         }
     }
 }

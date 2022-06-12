@@ -84,3 +84,10 @@ C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\obj\Debug\net5.0\OpsAPI.dll
 C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\obj\Debug\net5.0\ref\OpsAPI.dll
 C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\obj\Debug\net5.0\OpsAPI.pdb
 C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\obj\Debug\net5.0\OpsAPI.genruntimeconfig.cache
+C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
