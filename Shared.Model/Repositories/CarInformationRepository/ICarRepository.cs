@@ -10,9 +10,9 @@ namespace Shared.Model.Repositories.CarInformationRepository
 {
     public interface ICarRepository
     {
-        Task<InternalAPIResponseCode> GetCarInformation(string id, long time);
+        Task<InternalAPIResponseCode> GetCarInformation(string id);
         public Task InputCarIndex(Car car);
-        public Task<List<Car>> GetAllCarParkingOnDate(string date, string id);
+        public Task<List<Car>> GetAllCarParkingOnDate(string date);
         
     }
 }

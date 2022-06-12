@@ -21,7 +21,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
             PersistenceFactory = persistenceFactory;
         }
         //get all information in out all the time
-        public async Task<InternalAPIResponseCode> GetCarInformation(string licensePlate, long time)
+        public async Task<InternalAPIResponseCode> GetCarInformation(string licensePlate)
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
@@ -53,7 +53,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
                 };
             }
         }
-        public async Task<List<Car>> GetAllCarParkingOnDate(string date, string id)
+        public async Task<List<Car>> GetAllCarParkingOnDate(string date)
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {

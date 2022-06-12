@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Model.Entities.EF;
@@ -75,7 +76,7 @@ namespace Ops_api.Controllers
         public async Task<IActionResult> Login([FromBody] tblUser login)
         {
             IActionResult response = Unauthorized();
-            var user = AuthenticateUser(login);
+            var user = await AuthenticateUser(login);
 
             if (user != null)
             {
@@ -111,17 +112,16 @@ namespace Ops_api.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private tblUser AuthenticateUser(tblUser login)
+        private async Task<tblUser> AuthenticateUser(tblUser login)
         {
-            tblUser user = null;
-
+            var currentUser = await _context.tblUser.Where(o => o.UserName == login.UserName && login.Password == o.Password).FirstOrDefaultAsync();
             //Validate the User Credentials    
             //Demo Purpose, I have Passed HardCoded User Information    
-            if (login.UserName == "admin")
+            if (currentUser!=null)
             {
-                user = new tblUser { UserName = "admin", Password = "admin" };
+                return currentUser;
             }
-            return user;
+            return null;
         }
         [HttpGet]
         [Authorize]
