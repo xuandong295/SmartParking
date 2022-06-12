@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Shared.Model.Entities.EF;
+using Shared.Model.Entities.ElasticSearchModel;
 using Shared.Model.Persistence;
 using Shared.Model.Repositories.CarInformationRepository;
+using Shared.Model.Repositories.ParkingAreaRepository;
 using Shared.Model.Repositories.ParkingSpaceRepository;
 using System;
 using System.Collections.Generic;
@@ -20,13 +22,15 @@ namespace Ops_api.Controllers
         public readonly DataContext _context;
         private IPersistenceFactory PersistenceFactory;
         private ICarRepository CarRepository { get; set; }
+        private IParkingAreaRepository ParkingAreaRepository { get; set; }
         private IConfiguration _config;
-        public CarController(DataContext context, IPersistenceFactory persistenceFactory, ICarRepository carRepository, IConfiguration config)
+        public CarController(DataContext context, IPersistenceFactory persistenceFactory, IParkingAreaRepository parkingAreaRepository, ICarRepository carRepository, IConfiguration config)
         {
             _context = context;
             PersistenceFactory = persistenceFactory;
             CarRepository = carRepository;
             _config = config;
+            ParkingAreaRepository = parkingAreaRepository,
         }
         [HttpGet]
         [Route("car-infor")]
@@ -77,6 +81,36 @@ namespace Ops_api.Controllers
                 });
             }
 
+        }
+        [HttpPost]
+        [Route("in")]
+        public async Task<IActionResult> CreateCarComeInParkingSite(Car car, string idParkingArea)
+        {
+            //tạo thông tin trong db update parking area
+            await CarRepository.InputCarIndex(car);
+            var currentParkingSite = await ParkingAreaRepository.GetParkingAreaAsync(idParkingArea);
+            await ParkingAreaRepository.UpdateParkingSpaceAsync(idParkingArea, currentParkingSite.Current+1);
+            return Ok(new InternalAPIResponseCode
+            {
+                Code = APICodeResponse.SUCCESSED_CODE,
+                Message = MessageAPIResponse.OK,
+                Data = null
+            });
+        }
+        [HttpPost]
+        [Route("out")]
+        public async Task<IActionResult> CreateCarComeOutParkingSite(Car car, string idParkingArea)
+        {
+            //tạo thông tin trong db update parking area
+            await CarRepository.InputCarIndex(car);
+            var currentParkingSite = await ParkingAreaRepository.GetParkingAreaAsync(idParkingArea);
+            await ParkingAreaRepository.UpdateParkingSpaceAsync(idParkingArea, currentParkingSite.Current - 1);
+            return Ok(new InternalAPIResponseCode
+            {
+                Code = APICodeResponse.SUCCESSED_CODE,
+                Message = MessageAPIResponse.OK,
+                Data = null
+            });
         }
     }
 }
