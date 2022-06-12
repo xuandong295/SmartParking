@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <Folder Include="Repositories\CarInformationRepository\DTO\" />
+    <Folder Include="Repositories\ParkingAreaRepository\DTO\" />
+    <Folder Include="Repositories\ParkingSpaceRepository\DTO\" />
     <Folder Include="Repositories\UserRepository\DTO\" />
   </ItemGroup>
 

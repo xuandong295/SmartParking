@@ -9,7 +9,7 @@ namespace Ops_api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ParkingAreaController : ControllerBase
+    public class ParkingSpaceAreaController : ControllerBase
     {
     }
 }

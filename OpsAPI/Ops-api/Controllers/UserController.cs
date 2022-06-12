@@ -72,7 +72,7 @@ namespace Ops_api.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] User login)
+        public async Task<IActionResult> Login([FromBody] tblUser login)
         {
             IActionResult response = Unauthorized();
             var user = AuthenticateUser(login);
@@ -86,7 +86,7 @@ namespace Ops_api.Controllers
             return response;
         }
 
-        private string GenerateJSONWebToken(User userInfo)
+        private string GenerateJSONWebToken(tblUser userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -111,15 +111,15 @@ namespace Ops_api.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private User AuthenticateUser(User login)
+        private tblUser AuthenticateUser(tblUser login)
         {
-            User user = null;
+            tblUser user = null;
 
             //Validate the User Credentials    
             //Demo Purpose, I have Passed HardCoded User Information    
             if (login.UserName == "admin")
             {
-                user = new User { UserName = "admin", Password = "admin" };
+                user = new tblUser { UserName = "admin", Password = "admin" };
             }
             return user;
         }

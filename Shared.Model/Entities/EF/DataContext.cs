@@ -14,9 +14,9 @@ namespace Shared.Model.Entities.EF
     : base(options)
         {
         }
-        public DbSet<Class> Class { get; set; }
-        public DbSet<User> tblUser { get; set; }
+        public DbSet<tblUser> tblUser { get; set; }
         public DbSet<tblParkingSpace> tblParkingSpaces { get; set; }
+        public DbSet<tblParkingArea> tblParkingAreas { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             /*            if (!optionsBuilder.IsConfigured)

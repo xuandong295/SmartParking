@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Model.Entities.Model
 {
-    public class User
+    public class tblUser
     {
         public string Id { get; set; }
         public string UserName { get; set; }

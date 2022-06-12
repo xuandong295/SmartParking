@@ -9,7 +9,7 @@ namespace Shared.Model.Repositories.UserRepository
 {
     public interface IUserRepository
     {
-        Task<User> LoginAsync(string userName, string password);
+        Task<tblUser> LoginAsync(string userName, string password);
         Task<long> CaculateParkingFee(string licensePlate);
     }
 }

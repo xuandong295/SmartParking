@@ -14,16 +14,16 @@ using System.Threading.Tasks;
 
 namespace Shared.Model.Repositories.UserRepository
 {
-    public class UserRepository : BaseRepository<User>, IUserRepository
+    public class UserRepository : BaseRepository<tblUser>, IUserRepository
     {
-        private readonly DataContext DataContext;
+        private new readonly DataContext DataContext;
         IPersistenceFactory PersistenceFactory;
         public UserRepository(DataContext dataContext, IPersistenceFactory persistenceFactory) : base(dataContext)
         {
             PersistenceFactory = persistenceFactory;
             DataContext = dataContext;
         }
-        public async Task<User> LoginAsync(string userName, string password)
+        public async Task<tblUser> LoginAsync(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName)||string.IsNullOrEmpty(password))
             {
@@ -32,7 +32,7 @@ namespace Shared.Model.Repositories.UserRepository
             var currentUser = await DataContext.tblUser.Where(o => o.Password == password).Where(o=>o.UserName == userName).FirstOrDefaultAsync();
             if (currentUser!=null)
             {
-                return (User)currentUser;
+                return (tblUser)currentUser;
 
             }
             return null;
@@ -41,40 +41,6 @@ namespace Shared.Model.Repositories.UserRepository
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
-                //var cars = new List<User>();
-                //// get list resources
-                //QueryContainerDescriptor<object> query = new QueryContainerDescriptor<object>();
-                ////Đoạn này phải check state = 1 nữa
-                //query.Bool(b => b.
-                //           Filter(mu => mu
-                //                   .Term(t => t
-                //                      .Field("licensePlateNumber.keyword")
-                //                      .Value(licensePlate)
-                //                      )
-                //        )
-                //    );
-                //var aggs = new AggregationContainerDescriptor<object>();
-                //aggs.Terms("getTimeIn", t => t.Field("timeIn")
-                //        .Order(o => o.KeyDescending())
-                //        .Size(1))
-                //    .Terms("getBalance", t => t.Field("timeIn")
-                //    .Order(o => o.KeyDescending())
-                //        .Size(1));// only get latest time)
-                //var aggResponse = await elasticSearchClient.CustomizeAggregationAsync("1122", query, aggs, 0);
-                //if (aggResponse != null)
-                //{
-                //    var termTimeIn = aggResponse.Aggregations.Terms("getTimeIn").Buckets;
-                //    foreach (var item in termTimeIn)
-                //    {
-                //        var timeIn = item.Key;
-                //        // string to long
-                //    }
-                //    var termBalance = aggResponse.Aggregations.Terms("getBalance").Buckets;
-                //    foreach (var item in termBalance)
-                //    {
-                //        var balanceIn = item.Key;
-                //    }
-                //}
                 var cars = new List<Car>();
                 // get list resources
                 QueryContainerDescriptor<object> q = new QueryContainerDescriptor<object>();
@@ -95,8 +61,6 @@ namespace Shared.Model.Repositories.UserRepository
                     cars.Add(resource);
                 }
                 var currentCarParking = cars.OrderByDescending(o => o.TimeIn).ToList()[0];
-
-                //bên trên có thể get all rồi lọc lại theo trường timeIn?
 
                 // tính tiền
                 DateTime timeOut = DateTime.Now;

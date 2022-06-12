@@ -20,40 +20,8 @@ namespace Shared.Model.Repositories.CarInformationRepository
         {
             PersistenceFactory = persistenceFactory;
         }
-        public async Task<InternalAPIResponseCode> GetCarInformation(string id, long time)
-        {
-            using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
-            {
-                var cloudAccountDbIdQuery = elasticSearchClient.BuildFilterdTermQuery("cloudAccountDbId.keyword", id);
-                //Query severity
-                var querySeverity = new QueryContainerDescriptor<object>();
-                querySeverity.Bool(b => b.
-                            Filter(
-                                    mu => mu.Term(t => cloudAccountDbIdQuery)
-                            )
-                            );
-                var aggs = new AggregationContainerDescriptor<object>();
-                aggs.Terms("scanTime", v => v.Field("scanTime"));
-                var aggResponse = await elasticSearchClient.CustomizeAggregationAsync("1234", querySeverity, aggs, 0);
-                if (aggResponse != null)
-                {
-                    var smt = aggResponse.Hits;
-                    var scanTimes = aggResponse.Aggregations.Terms("scanTime").Buckets;
-                    foreach (var scanTime in scanTimes)
-                    {
-                        var b = scanTime.Key;
-                    }
-                }
-                return new InternalAPIResponseCode
-                {
-                    Code = APICodeResponse.SUCCESSED_CODE,
-                    Message = MessageAPIResponse.QUERY_SUCCESSED,
-                    Data = querySeverity
-                };
-
-            }
-        }
-        public async Task<List<Car>> GetAllCarParkingOnDate(DateTime dateTime, string id)
+        //get all information in out all the time
+        public async Task<InternalAPIResponseCode> GetCarInformation(string licensePlate, long time)
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
@@ -63,13 +31,37 @@ namespace Shared.Model.Repositories.CarInformationRepository
                 q.Bool(b => b.
                            Filter(mu => mu
                                    .Term(t => t
-                                      .Field("carId.keyword")
-                                      .Value(id)
+                                      .Field("licensePlateNumber.keyword")
+                                      .Value(licensePlate)
                                       )
                         )
                     );
-               
-                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync(dateTime.ToString(), q, "1m", 5000);
+
+                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync("DataGeneral", q, "1m", 5000);
+                foreach (var hit in resourceResponseHits)
+                {
+                    var jsonStr = JsonHelper.Serialize(hit.Source);
+                    var resource = JsonHelper.Deserialize<Car>(jsonStr);
+                    cars.Add(resource);
+                }
+                var currentCarParking = cars.OrderByDescending(o => o.TimeIn).ToList()[0];
+                return new InternalAPIResponseCode
+                {
+                    Code = APICodeResponse.SUCCESSED_CODE,
+                    Message = MessageAPIResponse.OK,
+                    Data = currentCarParking
+                };
+            }
+        }
+        public async Task<List<Car>> GetAllCarParkingOnDate(string date, string id)
+        {
+            using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
+            {
+                var cars = new List<Car>();
+                // get list resources
+                QueryContainerDescriptor<object> q = new QueryContainerDescriptor<object>();
+                q.MatchAll();
+                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync(date, q, "1m", 5000);
                 foreach (var hit in resourceResponseHits)
                 {
                     var jsonStr = JsonHelper.Serialize(hit.Source);
@@ -90,10 +82,11 @@ namespace Shared.Model.Repositories.CarInformationRepository
                     elasticSearchClient.CreateIndexAutoMapping<Car>(timeNow);
                 }
                 await elasticSearchClient.IndexOneAsync(car, timeNow);
-                //create 2 document in here
-                //on day, still in car parking, 1 cái nữa là tổng hợp tất cả
-                // nên làm cả 3 không?
 
+                //create 2 document in here
+                //on day, remain, DataGeneral
+                await elasticSearchClient.IndexOneAsync(car, "CarRemain");
+                await elasticSearchClient.IndexOneAsync(car, "DataGeneral");
             }
         }
     }
