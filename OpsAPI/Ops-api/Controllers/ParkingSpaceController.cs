@@ -28,7 +28,7 @@ namespace Ops_api.Controllers
             _config = config;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllParkingSpace()
+        public async Task<IActionResult> GetAllParkingSpaces()
         {
             var parkingSpace = await ParkingSpaceRepository.GetAllParkingSpacesAsync();
             if (parkingSpace == null)
@@ -40,6 +40,38 @@ namespace Ops_api.Controllers
                     Data = null
                 });
             }
+            return Ok(new InternalAPIResponseCode
+            {
+                Code = APICodeResponse.SUCCESSED_CODE,
+                Message = MessageAPIResponse.OK,
+                Data = parkingSpace
+            });
+        }
+        [HttpGet]
+        [Route("space")]
+        public async Task<IActionResult> GetParkingSpace(string id)
+        {
+            var parkingSpace = await ParkingSpaceRepository.GetParkingSpaceAsync(id);
+            if (parkingSpace == null)
+            {
+                return Ok(new InternalAPIResponseCode
+                {
+                    Code = APICodeResponse.FAILED_CODE,
+                    Message = MessageAPIResponse.RESOURCE_NOT_FOUND,
+                    Data = null
+                });
+            }
+            return Ok(new InternalAPIResponseCode
+            {
+                Code = APICodeResponse.SUCCESSED_CODE,
+                Message = MessageAPIResponse.OK,
+                Data = parkingSpace
+            });
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateParkingSpace(string id, int status)
+        {
+            var parkingSpace = await ParkingSpaceRepository.UpdateParkingSpaceAsync(id, status);
             return Ok(new InternalAPIResponseCode
             {
                 Code = APICodeResponse.SUCCESSED_CODE,
