@@ -31,6 +31,15 @@ namespace Ops_api.Controllers
         public async Task<IActionResult> GetAllParkingSpace()
         {
             var parkingSpace = await ParkingSpaceRepository.GetAllParkingSpacesAsync();
+            if (parkingSpace == null)
+            {
+                return Ok(new InternalAPIResponseCode
+                {
+                    Code = APICodeResponse.FAILED_CODE,
+                    Message = MessageAPIResponse.RESOURCE_NOT_FOUND,
+                    Data = null
+                });
+            }
             return Ok(new InternalAPIResponseCode
             {
                 Code = APICodeResponse.SUCCESSED_CODE,

@@ -29,7 +29,7 @@ namespace Ops_api.Controllers
             _config = config;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllParkingArea()
+        public async Task<IActionResult> GetAllParkingAreas()
         {
             var parkingAreas = await ParkingAreaRepository.GetAllParkingAreasAsync();
             return Ok(new InternalAPIResponseCode
@@ -37,6 +37,27 @@ namespace Ops_api.Controllers
                 Code = APICodeResponse.SUCCESSED_CODE,
                 Message = MessageAPIResponse.OK,
                 Data = parkingAreas
+            });
+        }
+        [HttpGet]
+        [Route("area")]
+        public async Task<IActionResult> GetParkingArea(string id)
+        {
+            var parkingArea = await ParkingAreaRepository.GetParkingAreaAsync(id);
+            if (parkingArea == null)
+            {
+                return Ok(new InternalAPIResponseCode
+                {
+                    Code = APICodeResponse.FAILED_CODE,
+                    Message = MessageAPIResponse.RESOURCE_NOT_FOUND,
+                    Data = null
+                });
+            }
+            return Ok(new InternalAPIResponseCode
+            {
+                Code = APICodeResponse.SUCCESSED_CODE,
+                Message = MessageAPIResponse.OK,
+                Data = parkingArea
             });
         }
     }

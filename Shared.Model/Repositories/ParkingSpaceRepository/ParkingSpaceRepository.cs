@@ -23,14 +23,14 @@ namespace Shared.Model.Repositories.ParkingSpaceRepository
         }
         public async Task<List<tblParkingSpace>> GetAllParkingSpacesAsync()
         {
-            var allParkingSpace = await DataContext.tblParkingSpaces.ToListAsync();
+            var allParkingSpace = await DataContext.tblParkingSpace.ToListAsync();
             return allParkingSpace;
         }
         public async Task<InternalAPIResponseCode> UpdateParkingSpaceAsync(string id, int state)
         {
             try
             {
-                var space = await DataContext.tblParkingSpaces.Where(o => o.Id == id).FirstOrDefaultAsync();
+                var space = await DataContext.tblParkingSpace.Where(o => o.Id == id).FirstOrDefaultAsync();
                 space.State = state;
                 await DataContext.SaveChangesAsync();
             }

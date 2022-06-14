@@ -30,7 +30,7 @@ namespace Ops_api.Controllers
             PersistenceFactory = persistenceFactory;
             CarRepository = carRepository;
             _config = config;
-            ParkingAreaRepository = parkingAreaRepository,
+            ParkingAreaRepository = parkingAreaRepository;
         }
         [HttpGet]
         [Route("car-infor")]

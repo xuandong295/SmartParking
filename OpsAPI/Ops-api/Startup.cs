@@ -19,6 +19,7 @@ using Shared.Model.Entities.EF;
 using Shared.Model.Persistence;
 using Shared.Model.Repositories.BaseRepository;
 using Shared.Model.Repositories.CarInformationRepository;
+using Shared.Model.Repositories.ParkingAreaRepository;
 using Shared.Model.Repositories.ParkingSpaceRepository;
 using Shared.Model.Repositories.UserRepository;
 using System;
@@ -67,6 +68,7 @@ namespace OpsAPI
             services.AddTransient<ICarRepository, CarRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IParkingSpaceRepository, ParkingSpaceRepository>();
+            services.AddTransient<IParkingAreaRepository, ParkingAreaRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
