@@ -8,12 +8,12 @@ namespace Shared.Model.Entities.ElasticSearchModel
 {
     public class Car
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string FrontImageLink { get; set; }
         public string BackImageLink { get; set; }
         public string LicensePlateNumber { get; set; }
-        public int TimeIn { get; set; }
-        public int TimeOut { get; set; }
+        public long TimeIn { get; set; }
+        public long TimeOut { get; set; }
         public int Status { get; set; }
     }
 }

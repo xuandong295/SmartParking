@@ -32,6 +32,7 @@ namespace Shared.Model.ConstantHelper
         }
         public struct MessageAPIResponse
         {
+            public static readonly string NOT_ENOUGH_MONNEY = "User have not enough monney please recharge and try again";
             public static readonly string ATTACHED_RG = "Some cloud accounts are attached to this resource group.";
             public static readonly string RESOURCE_UPDATE_FAILED = "Update resource unsuccessfully";
             public static readonly string SUPSCRIPTION_ALREADY_ACTIVE = "Subscription already activated";

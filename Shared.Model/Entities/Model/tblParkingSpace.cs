@@ -10,7 +10,7 @@ namespace Shared.Model.Entities.Model
     {
         public string Id { get; set; }
         public string Area { get; set; }
-        public int Position { get; set; }
+        public string Position { get; set; }
         public int State { get; set; }
     }
 }

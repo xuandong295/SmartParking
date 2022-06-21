@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Shared.Model.Entities.EF;
@@ -28,6 +29,7 @@ namespace Ops_api.Controllers
             ParkingAreaRepository = parkingAreaRepository;
             _config = config;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllParkingAreas()
         {

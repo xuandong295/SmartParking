@@ -96,8 +96,8 @@ namespace Ops_api.Controllers
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         //new Claim("Id", userInfo.Id.ToString()),
-                        new Claim("UserName", userInfo.UserName),
-                        //new Claim("Role", userInfo.Role),
+                        new Claim("username", userInfo.UserName),
+                        new Claim("roles", userInfo.Roles),
                         //new Claim("LisencePlateNumber", userInfo.LisencePlateNumber)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

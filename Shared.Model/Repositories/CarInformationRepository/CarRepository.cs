@@ -73,6 +73,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
         }
         public async Task InputCarIndex(Car car)
         {
+            car.Id = Guid.NewGuid().ToString();
             string timeNow = DateTime.Now.Date.ToString("d");
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Shared.Model.ConstantHelper.ConstantHelper;
 
 namespace Shared.Model.Repositories.UserRepository
 {
@@ -25,19 +26,19 @@ namespace Shared.Model.Repositories.UserRepository
         }
         public async Task<tblUser> LoginAsync(string userName, string password)
         {
-            if (string.IsNullOrEmpty(userName)||string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
             {
                 return null;
             }
-            var currentUser = await DataContext.tblUser.Where(o => o.Password == password).Where(o=>o.UserName == userName).FirstOrDefaultAsync();
-            if (currentUser!=null)
+            var currentUser = await DataContext.tblUser.Where(o => o.Password == password).Where(o => o.UserName == userName).FirstOrDefaultAsync();
+            if (currentUser != null)
             {
                 return (tblUser)currentUser;
 
             }
             return null;
         }
-        public async Task<long> CaculateParkingFee(string licensePlate)
+        public async Task<InternalAPIResponseCode> CaculateParkingFee(string licensePlate)
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
@@ -53,7 +54,7 @@ namespace Shared.Model.Repositories.UserRepository
                         )
                     );
 
-                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync("1122", q, "1m", 5000);
+                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync("CarRemain", q, "1m", 5000);
                 foreach (var hit in resourceResponseHits)
                 {
                     var jsonStr = JsonHelper.Serialize(hit.Source);
@@ -63,16 +64,23 @@ namespace Shared.Model.Repositories.UserRepository
                 var currentCarParking = cars.OrderByDescending(o => o.TimeIn).ToList()[0];
 
                 // tính tiền
-                DateTime timeOut = DateTime.Now;
+                DateTime timeNow = DateTime.Now;
                 // check thời gian hiện tại trừ đi thời gian gửi
                 var timeIn = UnixTimestamp.UnixTimestampToDateTime(currentCarParking.TimeIn);
-                var totalTimeInParkingSpace = timeOut - timeIn;
+                var totalTimeInParkingSpace = timeNow - timeIn;
                 long totalMoney = totalTimeInParkingSpace.Days * 50 + totalTimeInParkingSpace.Hours * 20 + totalTimeInParkingSpace.Minutes * 1;
                 //Sau đó tính tiền dựa theo thời gian
                 var user = await DataContext.tblUser.Where(o => o.LisencePlateNumber.Contains(licensePlate)).FirstOrDefaultAsync();
+                totalMoney = 100;
                 user.Balance -= totalMoney;
                 //////// nếu tiền âm trả lại messenge
-                //if (user.Balance < 0) return;
+                if (user.Balance < 0)
+                    return new InternalAPIResponseCode
+                    {
+                        Code = APICodeResponse.FAILED_CODE,
+                        Message = MessageAPIResponse.NOT_ENOUGH_MONNEY,
+                        Data = null
+                    };
                 DataContext.tblUser.Update(user);
                 await DataContext.SaveChangesAsync();
                 //Tiến hành update dữ liệu
@@ -87,10 +95,19 @@ namespace Shared.Model.Repositories.UserRepository
                                         )
                         )
                     );
-                var deleteDocInSmt = elasticSearchClient.DeleteByQueryAsync("all", qu);
+                // xóa ở bảng còn lại
+                var deleteDocInGeneral = elasticSearchClient.DeleteByQueryAsync("CarRemain", qu);
+                // tạo giữ liệu ra trong ngày
+                currentCarParking.TimeOut = UnixTimestamp.DateTimeToUnixTimestamp(DateTime.Now);
                 currentCarParking.Status = 0;
-                await elasticSearchClient.IndexOneAsync(currentCarParking, timeOut.ToString("d"));
-                return totalMoney;
+                await elasticSearchClient.IndexOneAsync(currentCarParking, timeNow.ToString("d"));
+                await elasticSearchClient.IndexOneAsync(currentCarParking, "CarGeneral");
+                return new InternalAPIResponseCode
+                {
+                    Code = APICodeResponse.FAILED_CODE,
+                    Message = MessageAPIResponse.OK,
+                    Data = null
+                };
             }
         }
     }

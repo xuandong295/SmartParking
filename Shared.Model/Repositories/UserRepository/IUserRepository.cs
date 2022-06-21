@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Shared.Model.ConstantHelper.ConstantHelper;
 
 namespace Shared.Model.Repositories.UserRepository
 {
     public interface IUserRepository
     {
         Task<tblUser> LoginAsync(string userName, string password);
-        Task<long> CaculateParkingFee(string licensePlate);
+        Task<InternalAPIResponseCode> CaculateParkingFee(string licensePlate);
     }
 }
