@@ -54,7 +54,7 @@ namespace Shared.Model.Repositories.UserRepository
                         )
                     );
 
-                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync("CarRemain", q, "1m", 5000);
+                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync("car_remain", q, "1m", 5000);
                 foreach (var hit in resourceResponseHits)
                 {
                     var jsonStr = JsonHelper.Serialize(hit.Source);
@@ -96,12 +96,12 @@ namespace Shared.Model.Repositories.UserRepository
                         )
                     );
                 // xóa ở bảng còn lại
-                var deleteDocInGeneral = elasticSearchClient.DeleteByQueryAsync("CarRemain", qu);
+                var deleteDocInGeneral = elasticSearchClient.DeleteByQueryAsync("car_remain", qu);
                 // tạo giữ liệu ra trong ngày
                 currentCarParking.TimeOut = UnixTimestamp.DateTimeToUnixTimestamp(DateTime.Now);
                 currentCarParking.Status = 0;
-                await elasticSearchClient.IndexOneAsync(currentCarParking, timeNow.ToString("d"));
-                await elasticSearchClient.IndexOneAsync(currentCarParking, "CarGeneral");
+                await elasticSearchClient.IndexOneAsync(currentCarParking, timeNow.ToString("d").Replace("/", "-"));
+                await elasticSearchClient.IndexOneAsync(currentCarParking, "car_general");
                 return new InternalAPIResponseCode
                 {
                     Code = APICodeResponse.FAILED_CODE,

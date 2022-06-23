@@ -84,12 +84,12 @@ namespace Ops_api.Controllers
         }
         [HttpPost]
         [Route("in")]
-        public async Task<IActionResult> CreateCarComeInParkingSite(Car car, string idParkingArea)
+        public async Task<IActionResult> CreateCarComeInParkingSite(Car car)
         {
             //tạo thông tin trong db update parking area
             await CarRepository.InputCarIndex(car);
-            var currentParkingSite = await ParkingAreaRepository.GetParkingAreaAsync(idParkingArea);
-            await ParkingAreaRepository.UpdateParkingSpaceAsync(idParkingArea, currentParkingSite.Current+1);
+            var currentParkingSite = await ParkingAreaRepository.GetParkingAreaAsync(car.ParkingAreaId);
+            await ParkingAreaRepository.UpdateParkingSpaceAsync(car.ParkingAreaId, currentParkingSite.Current+1);
             return Ok(new InternalAPIResponseCode
             {
                 Code = APICodeResponse.SUCCESSED_CODE,
@@ -99,12 +99,12 @@ namespace Ops_api.Controllers
         }
         [HttpPost]
         [Route("out")]
-        public async Task<IActionResult> CreateCarComeOutParkingSite(Car car, string idParkingArea)
+        public async Task<IActionResult> CreateCarComeOutParkingSite(Car car)
         {
             //tạo thông tin trong db update parking area
-            await CarRepository.InputCarIndex(car);
-            var currentParkingSite = await ParkingAreaRepository.GetParkingAreaAsync(idParkingArea);
-            await ParkingAreaRepository.UpdateParkingSpaceAsync(idParkingArea, currentParkingSite.Current - 1);
+            await CarRepository.OutputCarIndex(car);
+            var currentParkingSite = await ParkingAreaRepository.GetParkingAreaAsync(car.ParkingAreaId);
+            await ParkingAreaRepository.UpdateParkingSpaceAsync(car.ParkingAreaId, currentParkingSite.Current - 1);
             return Ok(new InternalAPIResponseCode
             {
                 Code = APICodeResponse.SUCCESSED_CODE,

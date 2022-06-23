@@ -37,7 +37,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
                         )
                     );
 
-                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync("DataGeneral", q, "1m", 5000);
+                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync("data_general", q, "1m", 5000);
                 foreach (var hit in resourceResponseHits)
                 {
                     var jsonStr = JsonHelper.Serialize(hit.Source);
@@ -74,7 +74,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
         public async Task InputCarIndex(Car car)
         {
             car.Id = Guid.NewGuid().ToString();
-            string timeNow = DateTime.Now.Date.ToString("d");
+            string timeNow = DateTime.Now.Date.ToString("d").Replace("/", "-");
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
                 // check index is exist?
@@ -85,10 +85,40 @@ namespace Shared.Model.Repositories.CarInformationRepository
                 await elasticSearchClient.IndexOneAsync(car, timeNow);
 
                 //create 2 document in here
-                //on day, remain, DataGeneral
-                await elasticSearchClient.IndexOneAsync(car, "CarRemain");
-                await elasticSearchClient.IndexOneAsync(car, "DataGeneral");
+                //on day, remain, data_general
+                await elasticSearchClient.IndexOneAsync(car, "car_remain");
+                await elasticSearchClient.IndexOneAsync(car, "data_general");
             }
+            
+        }
+        public async Task OutputCarIndex(Car car)
+        {
+            car.Id = Guid.NewGuid().ToString();
+            string timeNow = DateTime.Now.Date.ToString("d").Replace("/", "-");
+            using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
+            {
+                // check index is exist?
+                if (!elasticSearchClient.IsExistedIndex(timeNow))
+                {
+                    elasticSearchClient.CreateIndexAutoMapping<Car>(timeNow);
+                }
+                await elasticSearchClient.IndexOneAsync(car, timeNow);
+                QueryContainerDescriptor<object> q = new QueryContainerDescriptor<object>();
+                q.Bool(b => b.
+                           Filter(mu => mu
+                                   .Term(t => t
+                                      .Field("licensePlateNumber.keyword")
+                                      .Value(car.LicensePlateNumber)
+                                      )
+                        )
+                    );
+
+                //create 2 document in here
+                //on day, remain, data_general
+                await elasticSearchClient.DeleteByQueryAsync("car_remain", q);
+                await elasticSearchClient.IndexOneAsync(car, "data_general");
+            }
+
         }
     }
 }

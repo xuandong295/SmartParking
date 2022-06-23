@@ -13,6 +13,8 @@ namespace Shared.Model.Repositories.CarInformationRepository
         Task<InternalAPIResponseCode> GetCarInformation(string id);
         public Task InputCarIndex(Car car);
         public Task<List<Car>> GetAllCarParkingOnDate(string date);
-        
+        public Task OutputCarIndex(Car car);
+
+
     }
 }
