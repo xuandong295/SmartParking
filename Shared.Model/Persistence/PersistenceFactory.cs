@@ -1,4 +1,4 @@
-﻿using FPT.akaSAFE.Shared.Model.ElasticSearch;
+﻿using Shared.Model.ElasticSearch;
 using Microsoft.Extensions.Logging;
 using Shared.Model.Config;
 

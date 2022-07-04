@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FPT.akaSAFE.Shared.Model.ElasticSearch
+namespace Shared.Model.ElasticSearch
 {
     public interface IElasticSearchClient : IDisposable
     {

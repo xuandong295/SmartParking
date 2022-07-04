@@ -1,5 +1,5 @@
 using Elasticsearch.Net;
-using FPT.akaSAFE.Shared.Model.ElasticSearch;
+using Shared.Model.ElasticSearch;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

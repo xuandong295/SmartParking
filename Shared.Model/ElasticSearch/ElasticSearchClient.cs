@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using Shared.Model.Config;
 using Shared.Model.Entities.ElasticSearchModel;
 
-namespace FPT.akaSAFE.Shared.Model.ElasticSearch
+namespace Shared.Model.ElasticSearch
 {
     public class ElasticSearchClient : IElasticSearchClient, IDisposable
     {

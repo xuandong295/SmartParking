@@ -1,6 +1,6 @@
 ﻿
 
-using FPT.akaSAFE.Shared.Model.ElasticSearch;
+using Shared.Model.ElasticSearch;
 
 namespace Shared.Model.Persistence
 {
