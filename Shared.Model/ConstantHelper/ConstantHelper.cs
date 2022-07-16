@@ -38,6 +38,7 @@ namespace Shared.Model.ConstantHelper
             public static readonly string SUPSCRIPTION_ALREADY_ACTIVE = "Subscription already activated";
             public static readonly string LICENSE_NOT_EXISTS = "The license key does not exist";
             public static readonly string SUBSCRIPTION_NOT_EXISTS = "The subscription does not exist";
+            public static readonly string USERNAME_ALREADY_EXISTS = "The username already exist";
             public static readonly string LICENSE_ALREADY_ACTIVE = "The license key has already been used";
             public static readonly string LICENSE_ACTIVE_SUCCESSED = "Activate license key successfully";
             public static readonly string LICENSE_INVALID = "Invalid license key";
@@ -189,6 +190,12 @@ namespace Shared.Model.ConstantHelper
             public static readonly int USER_DISABLED = 7;
             public static readonly int CLIENT_ERROR = 8;
 
+        }
+
+        public struct Role
+        {
+            public static readonly string ADMIN = "Admin";
+            public static readonly string USER = "User";
         }
     }
 }

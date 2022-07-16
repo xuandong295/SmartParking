@@ -11,7 +11,7 @@ namespace Shared.Model.Repositories.ParkingAreaRepository
     public interface IParkingAreaRepository
     {
         public Task<InternalAPIResponseCode> UpdateParkingSpaceAsync(string id, int current);
-        public Task<tblParkingArea> GetParkingAreaAsync(string id);
+        public Task<tblParkingArea> GetParkingAreaAsync(string areaId);
         public Task<List<tblParkingArea>> GetAllParkingAreasAsync();
 
 

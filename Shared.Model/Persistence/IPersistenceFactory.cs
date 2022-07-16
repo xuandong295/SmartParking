@@ -1,5 +1,5 @@
 ﻿
-
+using Shared.Model.Config;
 using Shared.Model.ElasticSearch;
 
 namespace Shared.Model.Persistence
@@ -10,6 +10,8 @@ namespace Shared.Model.Persistence
     public interface IPersistenceFactory
     {
         IElasticSearchClient GetElasticSearchClient();
+        IMessageDispatcher GetMessageDispatcher();
+        IAppConfig GetAppConfig();
 
     }
 }

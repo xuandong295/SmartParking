@@ -6,9 +6,12 @@ namespace Shared.Model.Persistence
 {
     public class PersistenceFactory : IPersistenceFactory
     {
+        private RabbitMqConfiguration rabbitMqConfiguration;
+
         public ElasticSearchConfiguration ElasticSearchConfig { get; set; }
         public ILoggerFactory LoggerFactory { get; set; }
-
+        public RabbitMqConfiguration RabbitConfig { get; set; }
+        public AppConfig RabbitMqQueues { get; set; }
         public PersistenceFactory
             (
             ILoggerFactory loggerFactory
@@ -26,6 +29,31 @@ namespace Shared.Model.Persistence
             LoggerFactory = loggerFactory;
         }
 
+        public PersistenceFactory
+    (
+    ElasticSearchConfiguration elasticSearchConfiguration,
+    ILoggerFactory loggerFactory,
+    RabbitMqConfiguration rabbitMqConfiguration
+    )
+        {
+            ElasticSearchConfig = elasticSearchConfiguration;
+            LoggerFactory = loggerFactory;
+            RabbitConfig = rabbitMqConfiguration;
+        }
+        public PersistenceFactory
+    (
+    ElasticSearchConfiguration elasticSearchConfiguration,
+    ILoggerFactory loggerFactory,
+    RabbitMqConfiguration rabbitMqConfiguration,
+    AppConfig rabbitMqQueues
+    )
+        {
+            ElasticSearchConfig = elasticSearchConfiguration;
+            LoggerFactory = loggerFactory;
+            RabbitMqQueues = rabbitMqQueues;
+            RabbitConfig = rabbitMqConfiguration;
+
+        }
         public PersistenceFactory()
         {
 
@@ -34,6 +62,14 @@ namespace Shared.Model.Persistence
         public IElasticSearchClient GetElasticSearchClient()
         {
             return new ElasticSearchClient(ElasticSearchConfig, LoggerFactory);
+        }
+        public IMessageDispatcher GetMessageDispatcher()
+        {
+            return new RabbitMqDispatcher(RabbitConfig, LoggerFactory);
+        }
+        public IAppConfig GetAppConfig()
+        {
+            return RabbitMqQueues;
         }
     }
 }

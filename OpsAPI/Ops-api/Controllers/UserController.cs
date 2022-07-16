@@ -36,10 +36,22 @@ namespace Ops_api.Controllers
             _config = config;
         }
         [HttpPost]
-        [Route("sign-in")]
-        public async Task<IActionResult> SignIn(string userName, string password)
+        [Route("register")]
+        public async Task<IActionResult> Register(tblUser user)
         {
-            var currentUser = await UserRepository.LoginAsync(userName, password);
+            var currentUser = await UserRepository.RegisterAsync(user);
+            return Ok(new InternalAPIResponseCode
+            {
+                Code = APICodeResponse.SUCCESSED_CODE,
+                Message = MessageAPIResponse.OK,
+                Data = currentUser
+            });
+        }
+        [HttpPost]
+        [Route("sign-in")]
+        public async Task<IActionResult> SignIn(string username, string password)
+        {
+            var currentUser = await UserRepository.LoginAsync(username, password);
             if (currentUser != null)
             {
                 return Ok(new InternalAPIResponseCode
@@ -63,7 +75,20 @@ namespace Ops_api.Controllers
         [Route("fee")]
         public async Task<IActionResult> PaymentParkingFee(string licensePlate)
         {
-            await UserRepository.CaculateParkingFee(licensePlate);
+            //await UserRepository.CaculateParkingFee(licensePlate);
+            using (var messageDispatcher = PersistenceFactory.GetMessageDispatcher())
+            {
+                var scheduleMessage = new RabbitMQMessage
+                {
+                    Type = "cloudacc"
+                    
+                };
+
+                using (var rabbitMqQueues = PersistenceFactory.GetAppConfig())
+                {
+                    messageDispatcher.Enqueue<RabbitMQMessage>("wpf-manage-queue", scheduleMessage);
+                }
+            }
             return Ok(new InternalAPIResponseCode
             {
                 Code = APICodeResponse.SUCCESSED_CODE,
@@ -117,7 +142,7 @@ namespace Ops_api.Controllers
             var currentUser = await _context.tblUser.Where(o => o.UserName == login.UserName && login.Password == o.Password).FirstOrDefaultAsync();
             //Validate the User Credentials    
             //Demo Purpose, I have Passed HardCoded User Information    
-            if (currentUser!=null)
+            if (currentUser != null)
             {
                 return currentUser;
             }

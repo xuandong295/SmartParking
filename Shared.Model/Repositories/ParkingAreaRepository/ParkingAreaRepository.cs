@@ -26,9 +26,9 @@ namespace Shared.Model.Repositories.ParkingAreaRepository
             var allParkingArea = await DataContext.tblParkingArea.ToListAsync();
             return allParkingArea;
         }
-        public async Task<tblParkingArea> GetParkingAreaAsync(string id)
+        public async Task<tblParkingArea> GetParkingAreaAsync(string areaId)
         {
-            var parkingArea = await DataContext.tblParkingArea.Where(o => o.Id == id).FirstOrDefaultAsync();
+            var parkingArea = await DataContext.tblParkingArea.Where(o => o.Id == areaId).FirstOrDefaultAsync();
             return parkingArea;
         }
         public async Task<InternalAPIResponseCode> UpdateParkingSpaceAsync(string id, int current)

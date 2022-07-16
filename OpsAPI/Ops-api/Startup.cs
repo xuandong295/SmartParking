@@ -33,6 +33,8 @@ namespace OpsAPI
     public class Startup
     {
         private ILoggerFactory LoggerFactory { get; set; }
+        private RabbitMqConfiguration RabbitMqConfiguration { get; set; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -57,13 +59,16 @@ namespace OpsAPI
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             services.AddHttpContextAccessor();
+
+            RabbitMqConfiguration = new RabbitMqConfiguration(Configuration["RabbitMQ:Server"], Configuration["RabbitMQ:Port"], Configuration["RabbitMQ:Username"], Configuration["RabbitMQ:Password"], Configuration["RabbitMQ:QueueName"], Configuration["RabbitMQ:VHost"]);
+
             var ES_URI = Configuration["elasticsearch:url"];
             var pool = new StaticConnectionPool(new List<Uri> { new Uri(ES_URI) });
             var connectionSettings = new ConnectionSettings(pool);
             var elasticSearchConfiguration = new ElasticSearchConfiguration(connectionSettings);
             services.AddTransient<IPersistenceFactory, PersistenceFactory>(builder =>
             {
-                return new PersistenceFactory(elasticSearchConfiguration, LoggerFactory);
+                return new PersistenceFactory(elasticSearchConfiguration,  LoggerFactory, RabbitMqConfiguration);
             });
             services.AddTransient<ICarRepository, CarRepository>();
             services.AddTransient<IUserRepository, UserRepository>();

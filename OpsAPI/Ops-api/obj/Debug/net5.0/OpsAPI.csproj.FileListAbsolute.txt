@@ -91,3 +91,4 @@ C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.Id
 C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Admin\Desktop\SmartParking\OpsAPI\Ops-api\bin\Debug\net5.0\RabbitMQ.Client.dll

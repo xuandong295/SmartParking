@@ -104,11 +104,45 @@ namespace Shared.Model.Repositories.UserRepository
                 await elasticSearchClient.IndexOneAsync(currentCarParking, "car_general");
                 return new InternalAPIResponseCode
                 {
-                    Code = APICodeResponse.FAILED_CODE,
+                    Code = APICodeResponse.SUCCESSED_CODE,
                     Message = MessageAPIResponse.OK,
                     Data = null
                 };
             }
+        }
+
+        public async Task<InternalAPIResponseCode> RegisterAsync(tblUser user)
+        {
+            if (string.IsNullOrEmpty(user.LisencePlateNumber) || string.IsNullOrEmpty(user.Password) 
+                || string.IsNullOrEmpty(user.UserName))
+            {
+                return new InternalAPIResponseCode
+                {
+                    Code = APICodeResponse.FAILED_CODE,
+                    Message = MessageAPIResponse.INVALID_PARAMETER,
+                    Data = null
+                };
+            }
+            var existUser = await DataContext.tblUser.Where(o => o.UserName == user.UserName).FirstOrDefaultAsync();
+            if (existUser!=null)
+            {
+                return new InternalAPIResponseCode
+                {
+                    Code = APICodeResponse.FAILED_CODE,
+                    Message = MessageAPIResponse.USERNAME_ALREADY_EXISTS,
+                    Data = null
+                };
+            }
+            user.Roles = Role.USER;
+            user.Id = new Guid().ToString();
+            DataContext.tblUser.Add(user);
+            await DataContext.SaveChangesAsync();
+            return new InternalAPIResponseCode
+            {
+                Code = APICodeResponse.SUCCESSED_CODE,
+                Message = MessageAPIResponse.OK,
+                Data = null
+            };
         }
     }
 }

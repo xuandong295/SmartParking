@@ -9,7 +9,7 @@ namespace Shared.Model.Entities.Model
     public class tblParkingSpace
     {
         public string Id { get; set; }
-        public string Area { get; set; }
+        public string AreaId { get; set; }
         public string Position { get; set; }
         public int State { get; set; }
     }
