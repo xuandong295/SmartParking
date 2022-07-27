@@ -33,7 +33,7 @@ namespace Ops_api.Controllers
             ParkingAreaRepository = parkingAreaRepository;
         }
         [HttpGet]
-        [Route("car-infor")]
+        [Route("car-information")]
         public async Task<IActionResult> GetCarInformation(string licensePlate)
         {
             try
@@ -58,7 +58,7 @@ namespace Ops_api.Controllers
             
         }
         [HttpGet]
-        [Route("car-infor-on-date")]
+        [Route("car-information-on-date")]
         public async Task<IActionResult> GetCarInformationParkingOnDate(string date)
         {
             try

@@ -66,9 +66,14 @@ namespace OpsAPI
             var pool = new StaticConnectionPool(new List<Uri> { new Uri(ES_URI) });
             var connectionSettings = new ConnectionSettings(pool);
             var elasticSearchConfiguration = new ElasticSearchConfiguration(connectionSettings);
+            var rabbitMqQueues = new AppConfig
+            {
+                WPFManageQueue = Configuration["RabbitMQ:Queues:WPFManageQueue"]
+
+            };
             services.AddTransient<IPersistenceFactory, PersistenceFactory>(builder =>
             {
-                return new PersistenceFactory(elasticSearchConfiguration,  LoggerFactory, RabbitMqConfiguration);
+                return new PersistenceFactory(elasticSearchConfiguration,  LoggerFactory, RabbitMqConfiguration, rabbitMqQueues);
             });
             services.AddTransient<ICarRepository, CarRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
