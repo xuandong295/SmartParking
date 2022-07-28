@@ -13,6 +13,6 @@ namespace Shared.Model.Entities.Model
         public string Password { get; set; }
         public string Roles { get; set; }
         public string LisencePlateNumber { get; set; }
-        public long Balance{ get; set; }
+        public double Balance{ get; set; }
     }
 }

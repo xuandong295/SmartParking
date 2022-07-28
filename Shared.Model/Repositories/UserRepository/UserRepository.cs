@@ -68,10 +68,9 @@ namespace Shared.Model.Repositories.UserRepository
                 // check thời gian hiện tại trừ đi thời gian gửi
                 var timeIn = UnixTimestamp.UnixTimestampToDateTime(currentCarParking.TimeIn);
                 var totalTimeInParkingSpace = timeNow - timeIn;
-                long totalMoney = totalTimeInParkingSpace.Days * 50 + totalTimeInParkingSpace.Hours * 20 + totalTimeInParkingSpace.Minutes * 1;
+                double totalMoney = totalTimeInParkingSpace.TotalMinutes * 0.2;
                 //Sau đó tính tiền dựa theo thời gian
                 var user = await DataContext.tblUser.Where(o => o.LisencePlateNumber.Contains(licensePlate)).FirstOrDefaultAsync();
-                totalMoney = 100;
                 user.Balance -= totalMoney;
                 //////// nếu tiền âm trả lại messenge
                 if (user.Balance < 0)

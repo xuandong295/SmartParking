@@ -4,6 +4,7 @@ using Shared.Model.Entities.EF;
 using Shared.Model.Entities.ElasticSearchModel;
 using Shared.Model.Persistence;
 using Shared.Model.Repositories.BaseRepository;
+using Shared.Model.Repositories.CarInformationRepository.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,39 @@ namespace Shared.Model.Repositories.CarInformationRepository
             PersistenceFactory = persistenceFactory;
         }
         //get all information in out all the time
+        public async Task<InternalAPIResponseCode> GetCarHistoryInformation(string licensePlate)
+        {
+            using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
+            {
+                var cars = new List<Car>();
+                // get list resources
+                QueryContainerDescriptor<object> q = new QueryContainerDescriptor<object>();
+                q.Bool(b => b.
+                           Filter(mu => mu
+                                   .Term(t => t
+                                      .Field("licensePlateNumber.keyword")
+                                      .Value(licensePlate)
+                                      )
+                        )
+                    );
+
+                var resourceResponseHits = await elasticSearchClient.GetAllDocumentsInIndexAsync("data_general", q, "1m", 5000);
+                foreach (var hit in resourceResponseHits)
+                {
+                    var jsonStr = JsonHelper.Serialize(hit.Source);
+                    var resource = JsonHelper.Deserialize<Car>(jsonStr);
+                    cars.Add(resource);
+                }
+                var currentCarParking = cars.OrderByDescending(o => o.TimeIn).ToList();
+                return new InternalAPIResponseCode
+                {
+                    Code = APICodeResponse.SUCCESSED_CODE,
+                    Message = MessageAPIResponse.OK,
+                    Data = currentCarParking
+                };
+            }
+        }
+        //get car information in lastime
         public async Task<InternalAPIResponseCode> GetCarInformation(string licensePlate)
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
@@ -73,7 +107,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
         }
         public async Task InputCarIndex(Car car)
         {
-            car.Id = Guid.NewGuid().ToString();
+            
             string timeNow = DateTime.Now.Date.ToString("d").Replace("/", "-");
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
@@ -93,7 +127,6 @@ namespace Shared.Model.Repositories.CarInformationRepository
         }
         public async Task OutputCarIndex(Car car)
         {
-            car.Id = Guid.NewGuid().ToString();
             string timeNow = DateTime.Now.Date.ToString("d").Replace("/", "-");
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {

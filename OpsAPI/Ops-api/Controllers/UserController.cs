@@ -72,23 +72,10 @@ namespace Ops_api.Controllers
             }
         }
         [HttpGet]
-        [Route("fee")]
+        [Route("payment")]
         public async Task<IActionResult> PaymentParkingFee(string licensePlate)
         {
-            //await UserRepository.CaculateParkingFee(licensePlate);
-            using (var messageDispatcher = PersistenceFactory.GetMessageDispatcher())
-            {
-                var scheduleMessage = new RabbitMQMessage
-                {
-                    Type = "cloudacc"
-                    
-                };
-
-                using (var rabbitMqQueues = PersistenceFactory.GetAppConfig())
-                {
-                    messageDispatcher.Enqueue<RabbitMQMessage>("wpf-manage-queue", scheduleMessage);
-                }
-            }
+            await UserRepository.CaculateParkingFee(licensePlate);
             return Ok(new InternalAPIResponseCode
             {
                 Code = APICodeResponse.SUCCESSED_CODE,
@@ -147,12 +134,6 @@ namespace Ops_api.Controllers
                 return currentUser;
             }
             return null;
-        }
-        [HttpGet]
-        [Authorize]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2", "value3", "value4", "value5" };
         }
     }
 }
