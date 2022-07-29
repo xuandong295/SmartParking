@@ -22,7 +22,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
             PersistenceFactory = persistenceFactory;
         }
         //get all information in out all the time
-        public async Task<InternalAPIResponseCode> GetCarHistoryInformation(string licensePlate)
+        public async Task<List<Car>> GetCarHistoryInformation(string licensePlate)
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
@@ -46,16 +46,11 @@ namespace Shared.Model.Repositories.CarInformationRepository
                     cars.Add(resource);
                 }
                 var currentCarParking = cars.OrderByDescending(o => o.TimeIn).ToList();
-                return new InternalAPIResponseCode
-                {
-                    Code = APICodeResponse.SUCCESSED_CODE,
-                    Message = MessageAPIResponse.OK,
-                    Data = currentCarParking
-                };
+                return currentCarParking;
             }
         }
         //get car information in lastime
-        public async Task<InternalAPIResponseCode> GetCarInformation(string licensePlate)
+        public async Task<Car> GetCarInformation(string licensePlate)
         {
             using (var elasticSearchClient = PersistenceFactory.GetElasticSearchClient())
             {
@@ -79,12 +74,7 @@ namespace Shared.Model.Repositories.CarInformationRepository
                     cars.Add(resource);
                 }
                 var currentCarParking = cars.OrderByDescending(o => o.TimeIn).ToList()[0];
-                return new InternalAPIResponseCode
-                {
-                    Code = APICodeResponse.SUCCESSED_CODE,
-                    Message = MessageAPIResponse.OK,
-                    Data = currentCarParking
-                };
+                return currentCarParking;
             }
         }
         public async Task<List<Car>> GetAllCarParkingOnDate(string date)

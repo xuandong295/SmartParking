@@ -159,8 +159,7 @@ namespace Ops_api.Controllers
         [Route("out")]
         public async Task<IActionResult> CreateCarComeOutParkingSite(CarOutDTO carOut)
         {
-            var currentCarParkingInternal = await CarRepository.GetCarInformation(carOut.LicensePlateNumber);
-            var currentCarParking = (Car)currentCarParkingInternal.Data;
+            var currentCarParking = await CarRepository.GetCarInformation(carOut.LicensePlateNumber);
             Car oldCar = new Car()
             {
                 Id = Guid.NewGuid().ToString(),
