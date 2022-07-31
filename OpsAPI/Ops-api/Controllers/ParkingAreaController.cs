@@ -29,7 +29,7 @@ namespace Ops_api.Controllers
             ParkingAreaRepository = parkingAreaRepository;
             _config = config;
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllParkingAreas()
         {

@@ -75,13 +75,8 @@ namespace Ops_api.Controllers
         [Route("payment")]
         public async Task<IActionResult> PaymentParkingFee(string licensePlate)
         {
-            await UserRepository.CaculateParkingFee(licensePlate);
-            return Ok(new InternalAPIResponseCode
-            {
-                Code = APICodeResponse.SUCCESSED_CODE,
-                Message = MessageAPIResponse.OK,
-                Data = null
-            });
+            var result = await UserRepository.CaculateParkingFee(licensePlate);
+            return Ok(result);
         }
         [AllowAnonymous]
         [HttpPost]

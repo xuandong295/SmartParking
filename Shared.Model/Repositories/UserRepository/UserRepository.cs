@@ -64,13 +64,22 @@ namespace Shared.Model.Repositories.UserRepository
                 var currentCarParking = cars.OrderByDescending(o => o.TimeIn).ToList()[0];
 
                 // tính tiền
-                DateTime timeNow = DateTime.Now;
+                DateTime timeNow = DateTime.UtcNow;
                 // check thời gian hiện tại trừ đi thời gian gửi
                 var timeIn = UnixTimestamp.UnixTimestampToDateTime(currentCarParking.TimeIn);
                 var totalTimeInParkingSpace = timeNow - timeIn;
                 double totalMoney = totalTimeInParkingSpace.TotalMinutes * 0.2;
                 //Sau đó tính tiền dựa theo thời gian
                 var user = await DataContext.tblUser.Where(o => o.LisencePlateNumber.Contains(licensePlate)).FirstOrDefaultAsync();
+                if (user == null)
+                {
+                    return new InternalAPIResponseCode
+                    {
+                        Code = APICodeResponse.FAILED_CODE,
+                        Message = MessageAPIResponse.USER_NOT_EXISTS,
+                        Data = null
+                    };
+                }
                 user.Balance -= totalMoney;
                 //////// nếu tiền âm trả lại messenge
                 if (user.Balance < 0)
@@ -85,22 +94,22 @@ namespace Shared.Model.Repositories.UserRepository
                 //Tiến hành update dữ liệu
                 //Update tiền vào bảng user ở sql
                 //update là xóa ở bảng all, add ở bảng phụ
-                QueryContainerDescriptor<object> qu = new QueryContainerDescriptor<object>();
-                qu.Bool(b => b.
-                            Filter(mu => mu
-                                    .Term(t => t
-                                        .Field("licensePlateNumber.keyword")
-                                        .Value(licensePlate)
-                                        )
-                        )
-                    );
-                // xóa ở bảng còn lại
-                var deleteDocInGeneral = elasticSearchClient.DeleteByQueryAsync("car_remain", qu);
-                // tạo giữ liệu ra trong ngày
-                currentCarParking.TimeOut = UnixTimestamp.DateTimeToUnixTimestamp(DateTime.Now);
-                currentCarParking.Status = 0;
-                await elasticSearchClient.IndexOneAsync(currentCarParking, timeNow.ToString("d").Replace("/", "-"));
-                await elasticSearchClient.IndexOneAsync(currentCarParking, "car_general");
+                //QueryContainerDescriptor<object> qu = new QueryContainerDescriptor<object>();
+                //qu.Bool(b => b.
+                //            Filter(mu => mu
+                //                    .Term(t => t
+                //                        .Field("licensePlateNumber.keyword")
+                //                        .Value(licensePlate)
+                //                        )
+                //        )
+                //    );
+                //// xóa ở bảng còn lại
+                //var deleteDocInGeneral = elasticSearchClient.DeleteByQueryAsync("car_remain", qu);
+                //// tạo giữ liệu ra trong ngày
+                //currentCarParking.TimeOut = UnixTimestamp.DateTimeToUnixTimestamp(DateTime.UtcNow);
+                //currentCarParking.Status = 0;
+                //await elasticSearchClient.IndexOneAsync(currentCarParking, timeNow.ToString("d").Replace("/", "-"));
+                //await elasticSearchClient.IndexOneAsync(currentCarParking, "car_general");
                 return new InternalAPIResponseCode
                 {
                     Code = APICodeResponse.SUCCESSED_CODE,

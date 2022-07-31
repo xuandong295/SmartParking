@@ -121,6 +121,7 @@ namespace Ops_api.Controllers
                 FrontImageLink = carIn.FrontImageLink,
                 LicensePlateNumber = carIn.LicensePlateNumber,
                 ParkingAreaId = carIn.ParkingAreaId,
+                
                 TimeIn = UnixTimestamp.DateTimeToUnixTimestamp(DateTime.Now),
                 TimeOut = 0,
                 Status = 1
@@ -132,12 +133,14 @@ namespace Ops_api.Controllers
             //Send message to rabbitMQ
             using (var messageDispatcher = PersistenceFactory.GetMessageDispatcher())
             {
+                var parkingAreaName = await ParkingAreaRepository.GetParkingAreaAsync(carIn.ParkingAreaId);
                 var scheduleMessage = new RabbitMQMessage
                 {
                     BackImageLink = carIn.BackImageLink,
                     FrontImageLink = carIn.FrontImageLink,
                     LicensePlateNumber = carIn.LicensePlateNumber,
                     ParkingAreaId = carIn.ParkingAreaId,
+                    ParkingAreaName = parkingAreaName.Area,
                     TimeIn = UnixTimestamp.DateTimeToUnixTimestamp(DateTime.Now),
                     TimeOut = 0,
                     Status = 1
@@ -178,12 +181,14 @@ namespace Ops_api.Controllers
             //Send message to rabbitMQ
             using (var messageDispatcher = PersistenceFactory.GetMessageDispatcher())
             {
+                var parkingAreaName = await ParkingAreaRepository.GetParkingAreaAsync(oldCar.ParkingAreaId);
                 var scheduleMessage = new RabbitMQMessage
                 {
                     BackImageLink = carOut.BackImageLink,
                     FrontImageLink = carOut.FrontImageLink,
                     LicensePlateNumber = currentCarParking.LicensePlateNumber,
                     ParkingAreaId = currentCarParking.ParkingAreaId,
+                    ParkingAreaName = parkingAreaName.Area,
                     TimeIn = currentCarParking.TimeIn,
                     TimeOut = UnixTimestamp.DateTimeToUnixTimestamp(DateTime.Now),
                     Status = 0
