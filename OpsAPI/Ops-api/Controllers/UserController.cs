@@ -40,12 +40,7 @@ namespace Ops_api.Controllers
         public async Task<IActionResult> Register(tblUser user)
         {
             var currentUser = await UserRepository.RegisterAsync(user);
-            return Ok(new InternalAPIResponseCode
-            {
-                Code = APICodeResponse.SUCCESSED_CODE,
-                Message = MessageAPIResponse.OK,
-                Data = currentUser
-            });
+            return Ok(currentUser);
         }
         [HttpPost]
         [Route("sign-in")]
