@@ -144,7 +144,7 @@ namespace Shared.Model.Repositories.UserRepository
             user.Roles = Role.USER;
             user.Id = new Guid().ToString();
             DataContext.tblUser.Add(user);
-            await DataContext.SaveChangesAsync();
+            DataContext.SaveChanges();
             return new InternalAPIResponseCode
             {
                 Code = APICodeResponse.SUCCESSED_CODE,
